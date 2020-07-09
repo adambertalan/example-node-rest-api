@@ -4,6 +4,7 @@ var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 var rateLimit = require('express-rate-limit');
+var hbs = require('express-hbs');
 
 var apiRouter = require('./routes/api');
 var indexRouter = require('./routes/index');
@@ -12,8 +13,11 @@ var authRouter = require('./routes/auth');
 var app = express();
 
 // view engine setup
+app.engine('hbs', hbs.express4({
+  partialsDir: __dirname + '/views/partials'
+}));
 app.set('views', path.join(__dirname, 'views'));
-app.set('view engine', 'jade');
+app.set('view engine', 'hbs');
 
 const limiter = rateLimit({
   windowMs: 5 * 60 * 1000, // 5 min

@@ -5,12 +5,26 @@ var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 var rateLimit = require('express-rate-limit');
 var hbs = require('express-hbs');
+var passport = require('passport');
+var JwtStrategy = require('passport-jwt').Strategy;
+var ExtractJwt = require('passport-jwt').ExtractJwt;
 
 var apiRouter = require('./routes/api');
 var indexRouter = require('./routes/index');
 var authRouter = require('./routes/auth');
 
 var app = express();
+
+const opts = {
+  jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
+  secretOrKey: 'not-bacon'
+};
+
+passport.use(
+  new JwtStrategy(opts, function (jwt_payload, done) {
+    done(null, true);
+  })
+);
 
 // view engine setup
 app.engine('hbs', hbs.express4({
@@ -33,7 +47,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', indexRouter);
 app.use('/auth', authRouter);
-app.use('/api', apiRouter);
+app.use('/api', passport.authenticate('jwt', {session: false}), apiRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

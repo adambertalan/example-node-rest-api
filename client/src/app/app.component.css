@@ -11,7 +11,7 @@ nav {
     margin-bottom: .5em;
 }
 
-nav a {
+nav a, nav span {
     color: #fff;
 }
 

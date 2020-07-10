@@ -1,7 +1,8 @@
 import { Component } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { catchError, map } from 'rxjs/operators';
-import { of } from 'rxjs';
+import { catchError, map, takeWhile, finalize } from 'rxjs/operators';
+import { of, Observable, timer } from 'rxjs';
+import { JwtHelperService } from '@auth0/angular-jwt';
 
 @Component({
   selector: 'app-root',
@@ -11,6 +12,11 @@ import { of } from 'rxjs';
 export class AppComponent {
   token: string;
   responseData: any;
+  tokenExpirationTimer: Observable<number>;
+  tokenData: {
+    iat: number;
+    exp: number;
+  };
 
   constructor(
     private http: HttpClient,
@@ -20,8 +26,33 @@ export class AppComponent {
     console.log('Logging in');
     this.http.post<{token: string}>('http://localhost:3000/auth/login', {}, {observe: 'body'}).subscribe(response => {
       this.token = response.token;
+      this.extractTokenData();
+      this.startExpirationTimer();
       console.log('Successfully logged in, token: ', this.token);
     });
+  }
+
+  private extractTokenData() {
+    const helper = new JwtHelperService();
+    const decodedToken = helper.decodeToken(this.token);
+    this.tokenData = {
+      iat: decodedToken.iat,
+      exp: decodedToken.exp
+    };
+  }
+
+  private startExpirationTimer() {
+    this.tokenExpirationTimer = timer(0, 1000).pipe(
+      map(() => {
+        const nowTS = new Date().getTime();
+        const remainingTimeTS = this.tokenData.exp * 1000 - nowTS;
+        return remainingTimeTS;
+      }),
+      takeWhile(remainingTimeMS => remainingTimeMS > 0),
+      finalize(() => {
+        this.token = null;
+      })
+    );
   }
 
   getData() {

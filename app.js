@@ -8,6 +8,7 @@ var hbs = require('express-hbs');
 var passport = require('passport');
 var JwtStrategy = require('passport-jwt').Strategy;
 var ExtractJwt = require('passport-jwt').ExtractJwt;
+var cors = require("cors");
 
 var apiRouter = require('./routes/api');
 var indexRouter = require('./routes/index');
@@ -39,6 +40,7 @@ const limiter = rateLimit({
 });
 
 app.use(limiter);
+app.use(cors());
 app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));

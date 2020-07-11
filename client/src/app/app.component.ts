@@ -1,8 +1,10 @@
+import { LoginDialogComponent } from './login-dialog/login-dialog.component';
 import { Component } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { catchError, map, takeWhile, finalize } from 'rxjs/operators';
 import { of, Observable, timer } from 'rxjs';
 import { JwtHelperService } from '@auth0/angular-jwt';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 
 @Component({
   selector: 'app-root',
@@ -20,9 +22,11 @@ export class AppComponent {
 
   constructor(
     private http: HttpClient,
+    private modalService: NgbModal,
   ) {}
 
   login() {
+    /*
     console.log('Logging in');
     this.http.post<{token: string}>('http://localhost:3000/auth/login', {}, {observe: 'body'}).subscribe(response => {
       this.token = response.token;
@@ -30,6 +34,9 @@ export class AppComponent {
       this.startExpirationTimer();
       console.log('Successfully logged in, token: ', this.token);
     });
+    */
+    const modalRef = this.modalService.open(LoginDialogComponent);
+    modalRef.result.then(data => {});
   }
 
   private extractTokenData() {

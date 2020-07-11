@@ -1,0 +1,35 @@
+<div class="container mt-2 mb-3">
+    <div class="modal-header">
+        <h3>Login</h3>
+        <button type="button" class="close" aria-label="Close" (click)="activeModal.dismiss()">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <div class="modal-body">
+        <form #loginForm="ngForm">
+            <div class="form-group">
+                <label for="name-input">User name</label>
+                <input type="text"
+                id="name-input"
+                class="form-control"
+                name="name-input"
+                required
+                [(ngModel)]="userName">
+                <small class="form-text text-muted">Choose any name for your account</small>
+            </div>
+            <div class="form-group">
+                <label for="password-input">Password</label>
+                <input type="password"
+                id="password-input"
+                class="form-control"
+                name="password-input"
+                required
+                [(ngModel)]="password">
+                <small class="form-text text-muted">Type anything for password</small>
+            </div>
+            <div class="footer">
+                <button type="submit" class="btn btn-primary" [disabled]="!loginForm.valid">Login</button>
+            </div>
+        </form>
+    </div>
+</div>

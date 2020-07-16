@@ -15,37 +15,35 @@ export class AppComponent {
   token: string;
   responseData: any;
   tokenExpirationTimer: Observable<number>;
-  tokenData: {
-    iat: number;
-    exp: number;
-  };
+  tokenData: TokenData;
 
   constructor(
     private http: HttpClient,
     private modalService: NgbModal,
   ) {}
 
-  login() {
-    /*
+  openLoginDialog() {
+    const modalRef = this.modalService.open(LoginDialogComponent);
+    modalRef.result.then((data: LoginData) => {
+      this.login(data);
+    }).catch(() => {
+      // dialog dismissed
+    });
+  }
+
+  login(credentials: LoginData) {
     console.log('Logging in');
-    this.http.post<{token: string}>('http://localhost:3000/auth/login', {}, {observe: 'body'}).subscribe(response => {
+    this.http.post<{token: string}>('http://localhost:3000/auth/login', credentials, {observe: 'body'}).subscribe(response => {
       this.token = response.token;
       this.extractTokenData();
       this.startExpirationTimer();
       console.log('Successfully logged in, token: ', this.token);
     });
-    */
-    const modalRef = this.modalService.open(LoginDialogComponent);
-    modalRef.result.then(data => {});
   }
 
   private extractTokenData() {
     const helper = new JwtHelperService();
-    const decodedToken = helper.decodeToken(this.token);
-    this.tokenData = {
-      iat: decodedToken.iat,
-      exp: decodedToken.exp
-    };
+    this.tokenData = helper.decodeToken(this.token) as TokenData;
   }
 
   private startExpirationTimer() {
@@ -83,4 +81,16 @@ export class AppComponent {
       console.log('Successfuly get data: ', this.responseData);
     });
   }
+}
+
+interface LoginData {
+  username: string;
+  password: string;
+}
+
+interface TokenData {
+  id: string;
+  name: string;
+  iat: number;
+  exp: number;
 }

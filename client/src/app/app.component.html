@@ -2,12 +2,12 @@
   <a href="#" class="navbar-brand">Client</a>
   <ng-container *ngIf="!token else expirationTimerTemplate">
     <form class="form-inline">
-      <button class="btn btn-outline-light" type="button" (click)="login()">Login</button>
+      <button class="btn btn-outline-light" type="button" (click)="openLoginDialog()">Login</button>
     </form>
   </ng-container>
   <ng-template #expirationTimerTemplate>
     <span>
-      Authenticated! Token will expire in: {{tokenExpirationTimer | async | date:'HH:mm:ss':'utc'}}
+      Welcome {{tokenData?.name}}! Token will expire in: {{tokenExpirationTimer | async | date:'HH:mm:ss':'utc'}}
     </span>
   </ng-template>
 </nav>

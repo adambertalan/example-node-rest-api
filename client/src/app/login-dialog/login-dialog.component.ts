@@ -18,4 +18,11 @@ export class LoginDialogComponent implements OnInit {
   ngOnInit(): void {
   }
 
+  submit() {
+    this.activeModal.close({
+      username: this.userName,
+      password: this.password
+    });
+  }
+
 }

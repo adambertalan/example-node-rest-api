@@ -6,7 +6,7 @@
         </button>
     </div>
     <div class="modal-body">
-        <form #loginForm="ngForm">
+        <form #loginForm="ngForm" (ngSubmit)="submit()">
             <div class="form-group">
                 <label for="name-input">User name</label>
                 <input type="text"
